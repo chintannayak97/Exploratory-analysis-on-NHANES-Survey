@@ -1,0 +1,102 @@
+---
+title: "Midterm"
+author: "Chintan Nayak"
+date: "25/10/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(NHANES)
+library(dplyr)
+library(tibble)
+library(ggplot2)
+```
+
+```{r}
+NHANES
+```
+##1 
+
+```{r}
+glimpse(NHANES)
+```
+##2
+#A
+```{r}
+ggplot(NHANES, aes(Weight))+ geom_histogram()
+```
+##B
+
+
+```{r}
+ggplot(NHANES, aes(x=BMI, y=BPSysAve))+ geom_point()+ scale_x_log10()
+```
+##c
+
+```{r}
+ggplot(NHANES, aes(x=BMI, y=BPSysAve, color= Gender))+ geom_point()+ scale_x_log10()
+```
+##3
+
+##A
+
+```{r}
+with_duplicate= NHANES%>%
+  count(ID, SurveyYr)
+
+with_duplicate
+
+```
+
+The entry with ID 51624 and survey year 2009_10 is duplicated 3 times, hence this proves that there are duplicate entries and people have taken the same survey many times in a year.Also the number of rows have reduced from 10,000 to 6,779. This means there are 3221 duplicated entries.
+
+
+##B
+
+```{r}
+New_dataset <- NHANES%>%
+  select(ID, Gender, Age, Weight, Height, starts_with("BMI"), starts_with("BP"))
+
+New_dataset
+```
+
+##c
+
+```{r}
+COmpare_BMI <- NHANES%>%
+  mutate(New_BMI <-Weight/((Height/100)^2))
+
+COmpare_BMI%>%
+  select(BMI, `New_BMI <- Weight/((Height/100)^2)`)
+```
+##4
+
+##A
+
+```{r}
+NHANES%>%
+  group_by(HHIncome)%>%
+   summarise(Avg_height= mean(Height, na.rm= TRUE), Avg_weight= mean(Weight, na.rm= TRUE), Avg_BMI= mean(BMI, na.rm= TRUE), Percentage = (n()/10000)*100)
+```
+##B
+
+```{r}
+NHANES%>%
+  filter(BMI>25)%>%
+  group_by(Education)%>%
+  summarise(mean_BMI = mean(BMI), count=n(), percentage=(n()/10000)*100, Obesity= mean(BMI)>25)
+```
+
+```{r}
+
+ggplot(NHANES, aes(x=Education, y= BMI))+geom_point()
+```
+
+##5
+
+
+```{r}
+ggplot(NHANES, aes(x=Weight, y=BPSysAve, color=Gender, size= Age, shape=SmokeNow))+ geom_point()+ facet_wrap(~ Work)
+```
+
